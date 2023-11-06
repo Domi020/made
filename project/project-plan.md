@@ -8,7 +8,7 @@ Development of driving accident numbers among young drivers with the introductio
 
 <!-- Think about one main question you want to answer based on the data. -->
 - How did the numbers of driving accidents caused by young drivers in the "Probezeit" develop with the introduction of BF17 in the year of 2011?
-- Especially: Has the accident been noticeably reduced, or has it not really changed at all?
+- Especially: Has the accident number been noticeably reduced, or has it not really changed at all?
 
 ## Description
 
@@ -42,21 +42,22 @@ Number of driving accidents and information about the people who caused the acci
 
 <!-- List of work packages ordered sequentially, each pointing to an issue with more details. -->
 
-1. Example Issue [#1][i1]
-2. ...
+1. Create data pipeline to load online data sources [https://github.com/Domi020/made/issues/1]
+    1. Create script to read XLSX files [https://github.com/Domi020/made/issues/2]
+    2. Create script to download files [https://github.com/Domi020/made/issues/3]
+2. Merge Excel files to a single data frame object per data source [https://github.com/Domi020/made/issues/6]
+    1. Select correct Excel files [https://github.com/Domi020/made/issues/4]
+    2. Combine multiple Excel sheets to one data frame [https://github.com/Domi020/made/issues/5]
+3. Prepare data for visualization and metrics [https://github.com/Domi020/made/issues/9]
+    1. Analyse needed attributes [https://github.com/Domi020/made/issues/7]
+    2. Data cleansing and quality check [https://github.com/Domi020/made/issues/8]
+4. Create test suite [https://github.com/Domi020/made/issues/14]
+    1. Implement test for file download [https://github.com/Domi020/made/issues/10]
+    2. Implement test for Excel loading [https://github.com/Domi020/made/issues/11]
+    3. Implement test for data preparation [https://github.com/Domi020/made/issues/12]
+    4. Implement system test [https://github.com/Domi020/made/issues/13]
+5. Perform data analysis by creating proper diagrams and metrics [https://github.com/Domi020/made/issues/15]
+6. Create final report [https://github.com/Domi020/made/issues/16]
+7. Include license [https://github.com/Domi020/made/issues/17]
+8. Prepare README [https://github.com/Domi020/made/issues/18]
 
-
-- Pipeline to import data
-    - script to read XLSX
-    - script to download file
-- prepare data
-    - select correct excel files
-    - combine to one dataframe
-    - data preparation
-        - analyse attributes
-        - cleansing
-- display data as diagrams
-    - select
-
-
-[i1]: https://github.com/jvalue/made-template/issues/1
