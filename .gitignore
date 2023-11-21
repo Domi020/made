@@ -4,3 +4,6 @@
 exercises/venv
 exercises/requirements.txt
 *.sqlite
+project/urls.txt
+__pycache__
+.vscode
