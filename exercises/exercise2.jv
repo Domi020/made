@@ -1,12 +1,20 @@
 pipeline TrainstopsPipeline {
-    TrainstopsCsvExtractor
+    TrainstopsDownloader
+        -> TrainstopsTextFileConv
+        -> TrainstopsCsvInterpreter
         -> StatusColumnDeleter
         -> TrainstopsInterpreter
         -> SqliteSaver;
     
-    
-    block TrainstopsCsvExtractor oftype CSVExtractor {
+    block TrainstopsDownloader oftype HttpExtractor {
         url: "https://download-data.deutschebahn.com/static/datasets/haltestellen/D_Bahnhof_2020_alle.CSV";
+    }   
+
+    block TrainstopsTextFileConv oftype TextFileInterpreter {
+
+    }
+    
+    block TrainstopsCsvInterpreter oftype CSVInterpreter {
         delimiter: ";";
     }
 
@@ -28,7 +36,7 @@ pipeline TrainstopsPipeline {
 
     block SqliteSaver oftype SQLiteLoader {
         table: "trainstops";
-        file: "exercises/trainstops.sqlite";
+        file: "trainstops.sqlite";
     }
 
     block StatusColumnDeleter oftype ColumnDeleter {
