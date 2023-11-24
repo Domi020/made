@@ -28,7 +28,7 @@ pipeline TrainstopsPipeline {
 
     block SqliteSaver oftype SQLiteLoader {
         table: "trainstops";
-        file: "trainstops.sqlite";
+        file: "exercises/trainstops.sqlite";
     }
 
     block StatusColumnDeleter oftype ColumnDeleter {
