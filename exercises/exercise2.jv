@@ -23,11 +23,11 @@ pipeline TrainstopsPipeline {
         columns: [
             "EVA_NR" oftype integer,
             "DS100" oftype text,
-            "IFOPT" oftype text,
+            "IFOPT" oftype IFOPT,
             "NAME" oftype text,
-            "Verkehr" oftype text,
-            "Laenge" oftype decimal,
-            "Breite" oftype decimal, 
+            "Verkehr" oftype Verkehrtype,
+            "Laenge" oftype LengthType,
+            "Breite" oftype LengthType, 
             "Betreiber_Name" oftype text,
             "Betreiber_Nr" oftype integer,
             "Status" oftype text
@@ -42,5 +42,38 @@ pipeline TrainstopsPipeline {
     block StatusColumnDeleter oftype ColumnDeleter {
         delete: [column J];
     }
+
+    valuetype Verkehrtype oftype text {
+        constraints: [
+            VerkehrPossibleValues,
+        ];
+    }
+
+    constraint VerkehrPossibleValues on text:
+        value in [
+            "FV", "RV", "nur DPN"
+        ];
+
+    valuetype LengthType oftype decimal {
+        constraints: [
+            AllowedLength
+        ];
+    }
+
+    constraint AllowedLength oftype RangeConstraint {
+        lowerBound: -90;
+        upperBound: 90;
+    }
+
+    valuetype IFOPT oftype text {
+        constraints: [
+            IFOPTPattern
+        ];
+    }
+
+    constraint IFOPTPattern oftype RegexConstraint {
+        regex: /[a-zA-Z][a-zA-Z]:[0-9]*:[0-9]*(:[0-9]*)?/;
+    }
+    
 
 }
