@@ -1,23 +1,42 @@
 pipeline TrainstopsPipeline {
+
+    // pipeline
     TrainstopsDownloader
-        -> TrainstopsTextFileConv
+        -> TrainstopsTextFileInterpreter
         -> TrainstopsCsvInterpreter
         -> StatusColumnDeleter
         -> TrainstopsInterpreter
         -> SqliteSaver;
     
+
+
+
+
+    // download the csv file
     block TrainstopsDownloader oftype HttpExtractor {
         url: "https://download-data.deutschebahn.com/static/datasets/haltestellen/D_Bahnhof_2020_alle.CSV";
     }   
 
-    block TrainstopsTextFileConv oftype TextFileInterpreter {
+
+    // interprets the file as text file
+    block TrainstopsTextFileInterpreter oftype TextFileInterpreter {
 
     }
+
     
+    // interprets the text file as csv file
     block TrainstopsCsvInterpreter oftype CSVInterpreter {
         delimiter: ";";
     }
 
+
+    // remove Status column
+    block StatusColumnDeleter oftype ColumnDeleter {
+        delete: [column J];
+    }
+
+
+    // determine data types of columns including own data types
     block TrainstopsInterpreter oftype TableInterpreter {
         header: true;
         columns: [
@@ -34,37 +53,29 @@ pipeline TrainstopsPipeline {
         ];
     }
 
-    block SqliteSaver oftype SQLiteLoader {
-        table: "trainstops";
-        file: "trainstops.sqlite";
-    }
-
-    block StatusColumnDeleter oftype ColumnDeleter {
-        delete: [column J];
-    }
-
+    // type for Verkehr column: only FV, RV, nur DPN 
     valuetype Verkehrtype oftype text {
         constraints: [
             VerkehrPossibleValues,
         ];
     }
-
     constraint VerkehrPossibleValues on text:
         value in [
             "FV", "RV", "nur DPN"
         ];
 
+    // type for Laenge and Breite columns
     valuetype LengthType oftype decimal {
         constraints: [
             AllowedLength
         ];
     }
-
     constraint AllowedLength oftype RangeConstraint {
         lowerBound: -90;
         upperBound: 90;
     }
 
+    // type for IFOPT column
     valuetype IFOPT oftype text {
         constraints: [
             IFOPTPattern
@@ -75,5 +86,11 @@ pipeline TrainstopsPipeline {
         regex: /[a-zA-Z][a-zA-Z]:[0-9]*:[0-9]*(:[0-9]*)?/;
     }
     
+
+    // saves the table to a sqlite file
+    block SqliteSaver oftype SQLiteLoader {
+        table: "trainstops";
+        file: "trainstops.sqlite";
+    }
 
 }
