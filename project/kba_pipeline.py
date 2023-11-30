@@ -66,6 +66,21 @@ def append_to_sqlite_table(df, sqlite_engine, append):
                     index=False) # don't create extra index column)
 
 
+def run_kba_pipeline(data, sqlite_engine):
+    for i in range(len(data)):
+        get_file_from_internet(data[i][0], data[i][1])
+        tab_data = load_data_from_excel(data[i][1])
+        df = transform_to_df(tab_data)
+        df = clean_dataframe(df, data[i][3])
+        if i == 0:
+            # Only remove existing table at the first import
+            append_to_sqlite_table(df, sqlite_engine, 'replace')
+        else:
+            append_to_sqlite_table(df, sqlite_engine, 'append')
+
+
+
+
 data = [
     ('https://www.kba.de/SharedDocs/Downloads/DE/Statistik/Kraftfahrer/FE1/fe1_2023.xlsx?__blob=publicationFile&v=5', 'data/kba_probe_2023.xlsx', 'kba_2023', 2023),
     ('https://www.kba.de/SharedDocs/Downloads/DE/Statistik/Kraftfahrer/FE1/fe1_2022.xlsx?__blob=publicationFile&v=4', 'data/kba_probe_2022.xlsx', 'kba_2022', 2022),
@@ -76,18 +91,8 @@ data = [
     ('https://www.kba.de/SharedDocs/Downloads/DE/Statistik/Kraftfahrer/FE1/fe1_2017_xlsx.xlsx?__blob=publicationFile&v=2', 'data/kba_probe_2017.xlsx', 'kba_2017', 2017),
 ]
 
+
 sqlite_file_engine = sqla.create_engine('sqlite:///data/kba.sqlite')
 
-
-
-for i in range(len(data)):
-    get_file_from_internet(data[i][0], data[i][1])
-    tab_data = load_data_from_excel(data[i][1])
-    df = transform_to_df(tab_data)
-    df = clean_dataframe(df, data[i][3])
-    if i == 0:
-        # Only remove existing table at the first import
-        append_to_sqlite_table(df, sqlite_file_engine, 'replace')
-    else:
-        append_to_sqlite_table(df, sqlite_file_engine, 'append')
-
+if __name__ == "__main__":
+    run_kba_pipeline(data, sqlite_file_engine)
