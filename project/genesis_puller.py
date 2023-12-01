@@ -6,6 +6,7 @@ order_api = 'https://www-genesis.destatis.de/genesisWS/rest/2020/data/table?user
 result_collect_api = 'https://www-genesis.destatis.de/genesisWS/rest/2020/data/result?username={0}&password={1}&name={2}&area=all&compress=false&language=de'
 
 def get_csv_from_genesis(username, password):
+    print("Start pulling data from Destatis Genesis. This can take a bit.")
     tablename = _create_order(username, password)
     _collect_table(username, password, tablename)
 
@@ -25,6 +26,8 @@ def _collect_table(username, password, tablename):
             break
         if json_res['Status']['Code'] != 104:
             raise Exception('Unexpected error code')
+        print("Please wait...")
         time.sleep(15)
+    print("Got the data. Continuing with transformation...")
     with open('data/accidents.csv', 'w') as csv_file:
         csv_file.write(csv)
