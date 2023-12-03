@@ -16,7 +16,7 @@ def transform_to_df(data):
     df = pd.DataFrame(data)
     return df.applymap(lambda x: x.value)
 
-def clean_dataframe(df, year):
+def transform_dataframe(df, year):
     # Rename columns
     df = df.rename(columns={
         0: 'Alter',
@@ -32,10 +32,6 @@ def clean_dataframe(df, year):
         10: 'Zusammen',
         11: 'Fahrerlaubnisse bzw. Führerscheine'
     })
-
-    # Replace - and . with NaN
-    df = df.replace('-', np.nan)
-    df = df.replace('.', np.nan)
 
     # Add year
     df['Jahr'] = year
@@ -58,7 +54,12 @@ def clean_dataframe(df, year):
     })
 
     return df
- 
+
+def clean_dataframe(df):
+    # Replace - and . with NaN
+    df = df.replace('-', np.nan)
+    df = df.replace('.', np.nan)
+    return df
     
 def append_to_sqlite_table(df, sqlite_engine, append):
     df.to_sql(name='Fahrerlaubnisse', con=sqlite_engine, 
@@ -71,7 +72,8 @@ def run_kba_pipeline(data, sqlite_engine):
         get_file_from_internet(data[i][0], data[i][1])
         tab_data = load_data_from_excel(data[i][1])
         df = transform_to_df(tab_data)
-        df = clean_dataframe(df, data[i][3])
+        df = clean_dataframe(df)
+        df = transform_dataframe(df, data[i][3])
         if i == 0:
             # Only remove existing table at the first import
             append_to_sqlite_table(df, sqlite_engine, 'replace')

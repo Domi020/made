@@ -75,7 +75,7 @@ pull_from_genesis = True
 
 if len(sys.argv) != 3:
     print("WARNING: Destatis Genesis account data not entered!")
-    print("Usage: python destatis_pipeline.py <genesis_username> <genesis_password>")
+    print("Usage (for direct python call): python destatis_pipeline.py <genesis_username> <genesis_password>")
     print("Try to transform a local accidents.csv...")
     pull_from_genesis = False
 

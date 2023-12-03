@@ -14,8 +14,9 @@ echo "pipeline 1 finished"
 echo "Run pipeline 2/2: Destatis Genesis"
 if [ -z ${GENESIS_USER} ];
 then 
-    echo "Pipeline 2 not executed: Please enter a Genesis-Destatis user and password (can be created for free) in this script to access their data collection";
-    echo "pipeline 2 canceled";
+    echo "WARNING: No Genesis-Destatis user account was entered. Please enter a account in the pipeline.sh if you want to download the Destatis data or alternatively user a pre-downloaded csv of dataset '46241-0011'"
+    python project/destatis_pipeline.py;
+    echo "pipeline 2 finished";
 else 
     python project/destatis_pipeline.py $GENESIS_USER $GENESIS_PASSWORD;
     echo "pipeline 2 finished";
