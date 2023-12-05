@@ -133,36 +133,28 @@ class TestDestatisPipeline:
         # arrange
 
         # test
-        kba_pipeline.run_kba_pipeline(self.sqlite_file, GENESIS_USER, GENESIS_PASSWORD)
+        destatis_pipeline.run_destatis_pipeline(self.sqlite_file, GENESIS_USER, GENESIS_PASSWORD)
 
         # assert
         self.check_destatis_sqlite_file()
         
 
 
-    #def test_clean_dataframe(self):
-    #    # arrange
-    #    data = pd.read_pickle('project/test_data/df_to_clean.pkl')
-#
-    #    # test
-    #    result = kba_pipeline.clean_dataframe(data)
-#
-    #    # assert
-    #    assert not result.values.__contains__('.')
-    #    assert not result.values.__contains__('-')
-#
-#
-    #def test_transform_dataframe(self):
-    #    # arrange
-    #    data = pd.read_pickle('project/test_data/df_to_transform.pkl')
-#
-    #    # test
-    #    result = kba_pipeline.transform_dataframe(data, 2023)
-#
-    #    # assert
-    #    expected = pd.read_pickle('project/test_data/df_transformed.pkl')
-    #    pandas.testing.assert_frame_equal(result, expected)
-#
+    def test_transform_destatis_dataset(self):
+        # arrange
+        data = pd.read_pickle('project/test_data/destatis_df_to_transform.pkl')
+
+        # test
+        result = destatis_pipeline.transform_destatis_dataset(data)
+
+        # assert
+        assert not result.values.__contains__('.')
+        assert not result.values.__contains__('-')
+        assert not result.values.__contains__('Insgesamt')
+        assert not result.values.__contains__('Hauptverursacher des Unfalls')
+        assert len(result.columns) == 4
+
+
     def check_destatis_sqlite_file(self):
         assert os.path.isfile('data/destatis_test.sqlite')
 

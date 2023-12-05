@@ -64,7 +64,7 @@ def change_datatypes(df):
        '18-20': 'Int64'
     })
 
-def transform_kba_dataset(df):
+def transform_destatis_dataset(df):
     df = remove_unnecessary_columns(df)
     df = remove_unnecessary_lines(df)
     df = retransform_dataframe(df)
@@ -80,7 +80,7 @@ def run_destatis_pipeline(sqlite_engine, genesis_user=None, genesis_password=Non
         print("Found local accidents.csv! Continuing...")
     remove_first_lines()
     csv_dataframe = pd.read_csv(filepath_or_buffer='data/accidents_improved.csv', sep=';', header=None)
-    df = transform_kba_dataset(csv_dataframe)
+    df = transform_destatis_dataset(csv_dataframe)
     df.to_sql(name='accidents', con=sqlite_engine, 
                     if_exists='replace', # so that the script can be run multiple times without error/duplicate data
                     index=False) # don't create extra index column
