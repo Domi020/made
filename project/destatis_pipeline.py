@@ -65,35 +65,46 @@ def change_datatypes(df):
     })
 
 def transform_kba_dataset(df):
-    df = remove_unnecessary_columns(csv_dataframe)
+    df = remove_unnecessary_columns(df)
     df = remove_unnecessary_lines(df)
     df = retransform_dataframe(df)
     return change_datatypes(df)
      
-
-pull_from_genesis = True
-
-if len(sys.argv) != 3:
-    print("WARNING: Destatis Genesis account data not entered!")
-    print("Usage (for direct python call): python destatis_pipeline.py <genesis_username> <genesis_password>")
-    print("Try to transform a local accidents.csv...")
-    pull_from_genesis = False
-
-sqlite_file_engine = sqla.create_engine('sqlite:///data/kba.sqlite')
-
-if pull_from_genesis:
-    genesis_puller.get_csv_from_genesis(sys.argv[1], sys.argv[2])
-else:
-    if not os.path.isfile('data/accidents.csv'):
-        print("ERROR: No Destatis Genesis account entered and local accidents.csv does not exist! Aborting pipeline")
-        exit(1)
-    print("Found local accidents.csv! Continuing...")
-
-remove_first_lines()
-csv_dataframe = pd.read_csv(filepath_or_buffer='data/accidents_improved.csv', sep=';', header=None)
-
-df = transform_kba_dataset(csv_dataframe)
-
-df.to_sql(name='accidents', con=sqlite_file_engine, 
+def run_destatis_pipeline(sqlite_engine, genesis_user=None, genesis_password=None):
+    if genesis_user is not None:
+        genesis_puller.get_csv_from_genesis(genesis_user, genesis_password)
+    else:
+        if not os.path.isfile('data/accidents.csv'):
+            print("ERROR: No Destatis Genesis account entered and local accidents.csv does not exist! Aborting pipeline")
+            return False
+        print("Found local accidents.csv! Continuing...")
+    remove_first_lines()
+    csv_dataframe = pd.read_csv(filepath_or_buffer='data/accidents_improved.csv', sep=';', header=None)
+    df = transform_kba_dataset(csv_dataframe)
+    df.to_sql(name='accidents', con=sqlite_engine, 
                     if_exists='replace', # so that the script can be run multiple times without error/duplicate data
                     index=False) # don't create extra index column
+    return True
+
+
+
+# MAIN PART
+
+if __name__ == "__main__":
+    sqlite_file_engine = sqla.create_engine('sqlite:///data/kba.sqlite')
+
+    if len(sys.argv) != 3:
+        print("WARNING: Destatis Genesis account data not entered!")
+        print("Usage (for direct python call): python destatis_pipeline.py <genesis_username> <genesis_password>")
+        print("Try to transform a local accidents.csv...")
+        run_destatis_pipeline(sqlite_file_engine)
+    else:
+        run_destatis_pipeline(sqlite_file_engine, sys.argv[1], sys.argv[2])
+    
+
+    
+
+
+
+
+

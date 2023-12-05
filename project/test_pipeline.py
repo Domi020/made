@@ -1,9 +1,13 @@
 import sqlalchemy as sqla
 from sqlalchemy import inspect
 import kba_pipeline
+import destatis_pipeline
+import genesis_puller
 import os
 import pandas as pd
 import pandas.testing
+import shutil
+import pytest
 
 
 class TestKbaPipeline:
@@ -98,5 +102,89 @@ class TestKbaPipeline:
     def teardown_class(cls):
         try:
             os.remove('data/kba_test.sqlite')
+        except OSError:
+            pass
+
+
+GENESIS_USER = None
+GENESIS_PASSWORD = None
+
+class TestDestatisPipeline:
+    @classmethod
+    def setup_class(cls):
+        cls.sqlite_file = sqla.create_engine('sqlite:///data/destatis_test.sqlite')
+
+    # Complete pipeline run for kba pipeline
+    def test_destatis_pipeline_without_pulling(self):
+        # arrange
+        shutil.copyfile('project/test_data/accidents.csv', 'data/accidents.csv')
+
+        # test
+        destatis_pipeline.run_destatis_pipeline(self.sqlite_file)
+
+        # assert
+        self.check_destatis_sqlite_file()
+        
+    
+    
+    @pytest.mark.skipif(GENESIS_USER is None, 
+                        reason="Enter Genesis user and password above in the test_pipeline file to test this.")
+    def test_destatis_pipeline_complete(self):
+        # arrange
+
+        # test
+        kba_pipeline.run_kba_pipeline(self.sqlite_file, GENESIS_USER, GENESIS_PASSWORD)
+
+        # assert
+        self.check_destatis_sqlite_file()
+        
+
+
+    #def test_clean_dataframe(self):
+    #    # arrange
+    #    data = pd.read_pickle('project/test_data/df_to_clean.pkl')
+#
+    #    # test
+    #    result = kba_pipeline.clean_dataframe(data)
+#
+    #    # assert
+    #    assert not result.values.__contains__('.')
+    #    assert not result.values.__contains__('-')
+#
+#
+    #def test_transform_dataframe(self):
+    #    # arrange
+    #    data = pd.read_pickle('project/test_data/df_to_transform.pkl')
+#
+    #    # test
+    #    result = kba_pipeline.transform_dataframe(data, 2023)
+#
+    #    # assert
+    #    expected = pd.read_pickle('project/test_data/df_transformed.pkl')
+    #    pandas.testing.assert_frame_equal(result, expected)
+#
+    def check_destatis_sqlite_file(self):
+        assert os.path.isfile('data/destatis_test.sqlite')
+
+        inspector = inspect(self.sqlite_file)
+        tables = inspector.get_table_names()
+        assert 'accidents' in tables
+
+        con = self.sqlite_file.connect()
+        row_count_cursor = con.execute('SELECT COUNT(*) FROM accidents;')
+        assert next(row_count_cursor)[0] == 32
+
+        md = sqla.MetaData()
+        table = sqla.Table('accidents', md, autoload=True, autoload_with=con)
+        col_names = [col.name for col in list(table.c)]
+        col_types = [col.type.python_type for col in list(table.c)]
+        assert col_names == ['year', 'vehicle', '15-17', '18-20']
+        assert col_types == [int, str, int, int]
+
+    @classmethod
+    def teardown_class(cls):
+        try:
+            os.remove('data/destatis_test.sqlite')
+            os.remove('data/accidents.csv')
         except OSError:
             pass
