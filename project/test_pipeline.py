@@ -153,7 +153,6 @@ class TestDestatisPipeline:
         assert not result.values.__contains__('Insgesamt')
         assert not result.values.__contains__('Hauptverursacher des Unfalls')
         assert len(result.columns) == 4
-        assert 1 == 2
 
 
     def check_destatis_sqlite_file(self):
