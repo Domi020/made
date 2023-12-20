@@ -18,3 +18,4 @@ mechanize
 openpyxl
 requests
 pytest
+matplotlib
