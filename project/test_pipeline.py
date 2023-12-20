@@ -117,7 +117,7 @@ class TestDestatisPipeline:
     # Complete pipeline run for kba pipeline
     def test_destatis_pipeline_without_pulling(self):
         # arrange
-        shutil.copyfile('project/test_data/accidents.csv', 'data/accidents.csv')
+        shutil.copyfile('project/test_data/accidents_new.csv', 'data/accidents.csv')
 
         # test
         destatis_pipeline.run_destatis_pipeline(self.sqlite_file)
