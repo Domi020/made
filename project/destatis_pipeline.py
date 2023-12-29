@@ -17,7 +17,7 @@ def remove_unnecessary_columns(df):
     # - age (only 15-21 "beginners")
     # - only "Hauptverursacher"
     for i in range(4, len(df.columns)):
-        if (df[i][0] != 'Insgesamt' or (df[i][1] != '15 bis unter 18 Jahre' and df[i][1] != '18 bis unter 21 Jahre')
+        if (df[i][0] != 'Insgesamt' or (df[i][1] != '15 bis unter 18 Jahre' and df[i][1] != '18 bis unter 21 Jahre' and df[i][1] != '21 bis unter 25 Jahre' and df[i][1] != '25 bis unter 35 Jahre' and df[i][1] != '35 bis unter 45 Jahre' and df[i][1] != '45 bis unter 55 Jahre')
          or df[i][2] != 'Hauptverursacher des Unfalls'):
                 df = df.drop(columns=i)
     return df
@@ -35,7 +35,7 @@ def remove_unnecessary_lines(df):
  
 def retransform_dataframe(df):
     # Use age as column names
-    df = df.rename(columns={0:'year', 1: 'vehicle', 79: '15-17', 81: '18-20'})
+    df = df.rename(columns={0:'year', 1: 'vehicle', 79: '15-17', 81: '18-20', 83: '21-24', 85: '25-34', 87: '35-44', 89: '45-54'})
 
     # drop "Insgesamt" columns
     df = df.drop(columns=2)
@@ -61,7 +61,11 @@ def change_datatypes(df):
        'year': 'Int64',
        'vehicle': str,
        '15-17': 'Int64',
-       '18-20': 'Int64'
+       '18-20': 'Int64',
+       '21-24': 'Int64', 
+       '25-34': 'Int64',
+       '35-44': 'Int64',
+       '45-54': 'Int64'
     })
 
 def transform_destatis_dataset(df):

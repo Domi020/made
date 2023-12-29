@@ -2,7 +2,7 @@ import requests
 import re
 import time
 
-order_api = 'https://www-genesis.destatis.de/genesisWS/rest/2020/data/table?username={0}&password={1}&name=46241-0011&area=all&compress=false&transpose=false&startyear=2015&endyear=2023&timeslices=&regionalvariable=&regionalkey=&classifyingvariable1=&classifyingkey1=&classifyingvariable2=&classifyingkey2=&classifyingvariable3=&classifyingkey3=&job=true&language=de'
+order_api = 'https://www-genesis.destatis.de/genesisWS/rest/2020/data/table?username={0}&password={1}&name=46241-0011&area=all&compress=false&transpose=false&startyear=2008&endyear=2023&timeslices=&regionalvariable=&regionalkey=&classifyingvariable1=&classifyingkey1=&classifyingvariable2=&classifyingkey2=&classifyingvariable3=&classifyingkey3=&job=true&language=de'
 result_collect_api = 'https://www-genesis.destatis.de/genesisWS/rest/2020/data/result?username={0}&password={1}&name={2}&area=all&compress=false&language=de'
 
 def get_csv_from_genesis(username, password):
