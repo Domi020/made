@@ -14,7 +14,6 @@ def remove_first_lines():
 def remove_unnecessary_columns(df):
     # Removes/slices unnecessary dimensions out of the data cube: 
     # - gender (does not matter for research)
-    # - age (only 15-21 "beginners")
     # - only "Hauptverursacher"
     for i in range(4, len(df.columns)):
         if (df[i][0] != 'Insgesamt' or (df[i][1] != '15 bis unter 18 Jahre' and df[i][1] != '18 bis unter 21 Jahre' and df[i][1] != '21 bis unter 25 Jahre' and df[i][1] != '25 bis unter 35 Jahre' and df[i][1] != '35 bis unter 45 Jahre' and df[i][1] != '45 bis unter 55 Jahre')

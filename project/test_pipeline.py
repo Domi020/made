@@ -123,6 +123,9 @@ class TestDestatisPipeline:
         destatis_pipeline.run_destatis_pipeline(self.sqlite_file)
 
         # assert
+        con = self.sqlite_file.connect()
+        row_count_cursor = con.execute('SELECT COUNT(*) FROM accidents;')
+        assert next(row_count_cursor)[0] == 24
         self.check_destatis_sqlite_file()
         
     
@@ -136,6 +139,9 @@ class TestDestatisPipeline:
         destatis_pipeline.run_destatis_pipeline(self.sqlite_file, GENESIS_USER, GENESIS_PASSWORD)
 
         # assert
+        con = self.sqlite_file.connect()
+        row_count_cursor = con.execute('SELECT COUNT(*) FROM accidents;')
+        assert next(row_count_cursor)[0] == 45
         self.check_destatis_sqlite_file()
         
 
@@ -152,7 +158,7 @@ class TestDestatisPipeline:
         assert not result.values.__contains__('-')
         assert not result.values.__contains__('Insgesamt')
         assert not result.values.__contains__('Hauptverursacher des Unfalls')
-        assert len(result.columns) == 4
+        assert len(result.columns) == 8
 
 
     def check_destatis_sqlite_file(self):
@@ -163,15 +169,13 @@ class TestDestatisPipeline:
         assert 'accidents' in tables
 
         con = self.sqlite_file.connect()
-        row_count_cursor = con.execute('SELECT COUNT(*) FROM accidents;')
-        assert next(row_count_cursor)[0] == 32
 
         md = sqla.MetaData()
         table = sqla.Table('accidents', md, autoload=True, autoload_with=con)
         col_names = [col.name for col in list(table.c)]
         col_types = [col.type.python_type for col in list(table.c)]
-        assert col_names == ['year', 'vehicle', '15-17', '18-20']
-        assert col_types == [int, str, int, int]
+        assert col_names == ['year', 'vehicle', '15-17', '18-20', '21-24', '25-34', '35-44', '45-54']
+        assert col_types == [int, str, int, int, int, int, int, int]
 
     @classmethod
     def teardown_class(cls):
