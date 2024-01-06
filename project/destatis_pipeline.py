@@ -28,7 +28,7 @@ def remove_unnecessary_lines(df):
     # - all kinds of accidents => Insgesamt
     # - all places (innerorts, außerorts...) => Insgesamt
     for i in range(4, len(df.index)):
-        if (df.loc[[i]][1].iloc[0] != 'Personenkraftwagen' and df.loc[[i]][1].iloc[0] != 'Kraftomnibus' and df.loc[[i]][1].iloc[0] != 'Güterkraftfahrzeug'
+        if (df.loc[[i]][1].iloc[0] != 'Personenkraftwagen' and df.loc[[i]][1].iloc[0] != 'Güterkraftfahrzeug'
         and df.loc[[i]][1].iloc[0] != 'Landwirtschaftliche Zugmaschine') or df.loc[[i]][2].iloc[0] != 'Insgesamt' or df.loc[[i]][3].iloc[0] != 'Insgesamt':
              df = df.drop(index=i)
     return df
