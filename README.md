@@ -1,42 +1,36 @@
-# Methods of Advanced Data Engineering Template Project
+# Development of driving accident numbers among young drivers with the introduction of BF17
+## Introduction
+In the year 2011 the program BF17 ("Begleitetes Fahren ab 17" / "Accompanied Driving from 17 on") was introduced in Germany. 
+Young people participating in this program can get their car driving license already at the age of 17, one year before the regular permission age, and can drive as long as they are accompanied by an adult.\
+The benefit of this program was said to be a reduction of driving accidents because young drivers get more expertise together with an experienced companion.
 
-This template project provides some structure for your open data project in the MADE module at FAU.
-This repository contains (a) a data science project that is developed by the student over the course of the semester, and (b) the exercises that are submitted over the course of the semester.
-Before you begin, make sure you have [Python](https://www.python.org/) and [Jayvee](https://github.com/jvalue/jayvee) installed. We will work with [Jupyter notebooks](https://jupyter.org/). The easiest way to do so is to set up [VSCode](https://code.visualstudio.com/) with the [Jupyter extension](https://marketplace.visualstudio.com/items?itemName=ms-toolsai.jupyter).
+Because now more than 10 years have passed since the introduction of BF17, it is interesting to take a look, if this hope of fewer accidents can be confirmed.
+This is done in this project by looking at the number of driving accidents among young drivers in combination with the numbers of BF17 participants in the last years. 
+First it is relevant to see how accepted this BF17 program is among young people, and if enough people are participating so that a meaningful influence on the accident numbers can be deduced.
+The question then is if a correlation can be found in those two numbers: Has an increasing number of BF17 participants led to fewer driving accidents among young people?
+
+In summary, the following questions should be answered in this project:
+- Are enough young people using the BF17 program, so that a relevant influence in the accidents can be even deduced from the program?
+- Did the introduction of BF17 reduce the number of accidents among young drivers?
+- Could BF17 have any negative effect (for example an increase of accidents that already 17-year-olds have)?
+
+## Final report
+To directly get to the final report presenting the final results of this project, click here: [Final report](https://github.com/Domi020/made/blob/main/project/report.ipynb)
+
+## Used data sources
+### Data source 1: Number of driving permissions on probation over the last years
+Detailed statistics of driving permissions on probation (= new driving licenses) in Germany of the Kraftfahrbundesamt.
+Grouped by year, license type and age.
+Link: https://www.kba.de/DE/Statistik/Kraftfahrer/Fahrerlaubnisse/FahrerlaubnisProbe/fahrerlaubnisprobe_node.html
+
+Used under the Data licence Germany – attribution – version 2.0 available under http://www.govdata.de/dl-de/by-2-0
 
 
-## Project Work
-Your data engineering project will run alongside lectures during the semester. We will ask you to regularly submit project work as milestones so you can reasonably pace your work. All project work submissions **must** be placed in the `project` folder.
-
-### Exporting a Jupyter Notebook
-Jupyter Notebooks can be exported using `nbconvert` (`pip install nbconvert`). For example, to export the example notebook to html: `jupyter nbconvert --to html examples/final-report-example.ipynb --embed-images --output final-report.html`
 
 
-## Exercises
-During the semester you will need to complete exercises, sometimes using [Python](https://www.python.org/), sometimes using [Jayvee](https://github.com/jvalue/jayvee). You **must** place your submission in the `exercises` folder in your repository and name them according to their number from one to five: `exercise<number from 1-5>.<jv or py>`.
 
-In regular intervalls, exercises will be given as homework to complete during the semester. We will divide you into two groups, one completing an exercise in Jayvee, the other in Python, switching each exercise. Details and deadlines will be discussed in the lecture, also see the [course schedule](https://made.uni1.de/). At the end of the semester, you will therefore have the following files in your repository:
+### Datasource 2: Number of driving accidents over the last years
+Number of driving accidents and information about the people who caused the accidents in Germany grouped by year by the Statistisches Bundesamt of Germany.
+Link: https://www-genesis.destatis.de/genesis//online?operation=table&code=46241-0011&bypass=true&levelindex=1&levelid=1698497814414#abreadcrumb
 
-1. `./exercises/exercise1.jv` or `./exercises/exercise1.py`
-2. `./exercises/exercise2.jv` or `./exercises/exercise2.py`
-3. `./exercises/exercise3.jv` or `./exercises/exercise3.py`
-4. `./exercises/exercise4.jv` or `./exercises/exercise4.py`
-5. `./exercises/exercise5.jv` or `./exercises/exercise5.py`
-
-### Exercise Feedback
-We provide automated exercise feedback using a GitHub action (that is defined in `.github/workflows/exercise-feedback.yml`). 
-
-To view your exercise feedback, navigate to Actions -> Exercise Feedback in your repository.
-
-The exercise feedback is executed whenever you make a change in files in the `exercise` folder and push your local changes to the repository on GitHub. To see the feedback, open the latest GitHub Action run, open the `exercise-feedback` job and `Exercise Feedback` step. You should see command line output that contains output like this:
-
-```sh
-Found exercises/exercise1.jv, executing model...
-Found output file airports.sqlite, grading...
-Grading Exercise 1
-	Overall points 17 of 17
-	---
-	By category:
-		Shape: 4 of 4
-		Types: 13 of 13
-```
+Used under the Data licence Germany – attribution – version 2.0 available under http://www.govdata.de/dl-de/by-2-0
