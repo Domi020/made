@@ -17,6 +17,10 @@ In summary, the following questions should be answered in this project:
 ## Final report
 To directly get to the final report presenting the final results of this project, click here: [Final report](https://github.com/Domi020/made/blob/main/project/report.ipynb)
 
+## Presentation of the report and slides
+You find a recorded 10-minute-presentation of the report here: [Video](https://github.com/Domi020/made/blob/main/project/presentation-video.md).
+The slides of this presentation are also uploaded in this repository: [Slides](https://github.com/Domi020/made/blob/main/project/slides.pdf).
+
 ## Used data sources
 ### Data source 1: Number of driving permissions on probation over the last years
 Detailed statistics of driving permissions on probation (= new driving licenses) in Germany of the Kraftfahrbundesamt.
