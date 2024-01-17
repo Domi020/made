@@ -1,0 +1,80 @@
+pipeline TemperaturesGeraetePipeline {
+
+    GeraeteArchiveDownloader
+        -> GeraeteArchiveUnzipper
+        -> DataFilePicker
+        -> TextFileInterpreter
+        -> GeraeteFileCSVInterpreter
+        -> HeaderRemover
+        -> ColumnRemover
+        -> GeraeteTableInterpreter
+        -> TemperaturToFahrenheitTransformer
+        -> BatterietemperaturToFahrenheitTransformer
+        -> SqliteSaver
+        ;
+
+
+    block GeraeteArchiveDownloader oftype HttpExtractor {
+        url: "https://www.mowesta.com/data/measure/mowesta-dataset-20221107.zip";
+    }
+
+    block GeraeteArchiveUnzipper oftype ArchiveInterpreter {
+        archiveType: "zip";
+    }
+
+    block DataFilePicker oftype FilePicker {
+        path: "/data.csv";
+    }
+
+    block TextFileInterpreter oftype TextFileInterpreter {}
+
+    block GeraeteFileCSVInterpreter oftype CSVInterpreter {
+        delimiter: ";";
+    }
+
+    block HeaderRemover oftype RowDeleter {
+        delete: [row 1];
+    }
+
+    block ColumnRemover oftype ColumnDeleter {
+        delete: [column F, column G, column H, column I];
+    }
+
+    block GeraeteTableInterpreter oftype TableInterpreter {
+        header: false;
+        columns: [
+            "Geraet" oftype text,
+            "Hersteller" oftype text,
+            "Model" oftype text,
+            "Monat" oftype integer,
+            "Temperatur" oftype decimal,
+            "Batterietemperatur" oftype decimal,
+            "Geraet aktiv" oftype text
+        ];
+    }
+
+    transform CelsiusToFahrenheit {
+        from inputCelsius oftype decimal;
+        to outputFahrenheit oftype decimal;
+        outputFahrenheit: (inputCelsius * 9/5) + 32;
+    }
+
+    block TemperaturToFahrenheitTransformer oftype TableTransformer {
+        inputColumns: ["Temperatur"];
+        outputColumn: "Temperatur";
+        use: CelsiusToFahrenheit;
+    }
+
+    block BatterietemperaturToFahrenheitTransformer oftype TableTransformer {
+        inputColumns: ["Batterietemperatur"];
+        outputColumn: "Batterietemperatur";
+        use: CelsiusToFahrenheit;
+    }
+
+    block SqliteSaver oftype SQLiteLoader {
+        table: "temperatures";
+        file: "temperatures.sqlite";
+    }
+
+
+}
