@@ -1,5 +1,6 @@
 pipeline TemperaturesGeraetePipeline {
 
+    // PIPELINE
     GeraeteArchiveDownloader
         -> GeraeteArchiveUnzipper
         -> DataFilePicker
@@ -14,32 +15,56 @@ pipeline TemperaturesGeraetePipeline {
         ;
 
 
+
+
+    // BLOCKS 
+
+    // download the zip file via the given url
     block GeraeteArchiveDownloader oftype HttpExtractor {
         url: "https://www.mowesta.com/data/measure/mowesta-dataset-20221107.zip";
     }
 
+
+    // unzip the downloaded zip
     block GeraeteArchiveUnzipper oftype ArchiveInterpreter {
         archiveType: "zip";
     }
 
+
+    // pick the "data.csv" file in the folder
     block DataFilePicker oftype FilePicker {
         path: "/data.csv";
     }
 
+
+    // interpret it as textfile => then as csv
     block TextFileInterpreter oftype TextFileInterpreter {}
 
     block GeraeteFileCSVInterpreter oftype CSVInterpreter {
         delimiter: ";";
     }
 
+
+    // remove the header of the csv (with the column names; so that only the data remains)
     block HeaderRemover oftype RowDeleter {
         delete: [row 1];
     }
 
+
+    // remove the unnecessary columns 
     block ColumnRemover oftype ColumnDeleter {
-        delete: [column F, column G, column H, column I];
+        delete: [column F, // latitude
+            column G, // longitude
+            column H, // Verschleierung
+            column I // Aufenthaltsdauer im Freien
+        ];
     }
 
+
+    // interpret the table correctly; by this the following steps happen:
+    // - all columns right of "Geraet aktiv" are removed
+    // - datatypes are changed correctly
+    // - input validation
     block GeraeteTableInterpreter oftype TableInterpreter {
         header: false;
         columns: [
@@ -53,12 +78,8 @@ pipeline TemperaturesGeraetePipeline {
         ];
     }
 
-    transform CelsiusToFahrenheit {
-        from inputCelsius oftype decimal;
-        to outputFahrenheit oftype decimal;
-        outputFahrenheit: (inputCelsius * 9/5) + 32;
-    }
 
+    // transform the temperature columns to Fahrenheit (2 blocks and 1 transform)
     block TemperaturToFahrenheitTransformer oftype TableTransformer {
         inputColumns: ["Temperatur"];
         outputColumn: "Temperatur";
@@ -71,14 +92,23 @@ pipeline TemperaturesGeraetePipeline {
         use: CelsiusToFahrenheit;
     }
 
+    transform CelsiusToFahrenheit {
+        from inputCelsius oftype decimal;
+        to outputFahrenheit oftype decimal;
+        outputFahrenheit: (inputCelsius * 9/5) + 32;
+    }
+
+
+    // save the prepared table into a SQLite db
     block SqliteSaver oftype SQLiteLoader {
         table: "temperatures";
         file: "temperatures.sqlite";
     }
 
 
-
+    // VALUETYPES AND CONSTRAINTS (for validation)
     
+    // ID type (only positive integers)
     valuetype IDType oftype integer {
         constraints: [
             IDRange,
@@ -90,6 +120,8 @@ pipeline TemperaturesGeraetePipeline {
         lowerBoundInclusive: false;
     }
 
+
+    // type for months (only integers 1-12)
     valuetype MonthType oftype integer {
         constraints: [
             MonthRange,
@@ -101,6 +133,8 @@ pipeline TemperaturesGeraetePipeline {
         upperBound: 12;
     }
 
+
+    // type for German booleans (Ja,  Nein)
     valuetype GermanBoolean oftype text {
         constraints: [
             GermanBooleanValues,
