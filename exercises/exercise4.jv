@@ -43,13 +43,13 @@ pipeline TemperaturesGeraetePipeline {
     block GeraeteTableInterpreter oftype TableInterpreter {
         header: false;
         columns: [
-            "Geraet" oftype text,
+            "Geraet" oftype IDType,
             "Hersteller" oftype text,
             "Model" oftype text,
-            "Monat" oftype integer,
+            "Monat" oftype MonthType,
             "Temperatur" oftype decimal,
             "Batterietemperatur" oftype decimal,
-            "Geraet aktiv" oftype text
+            "Geraet aktiv" oftype GermanBoolean
         ];
     }
 
@@ -76,5 +76,40 @@ pipeline TemperaturesGeraetePipeline {
         file: "temperatures.sqlite";
     }
 
+
+
+    
+    valuetype IDType oftype integer {
+        constraints: [
+            IDRange,
+        ];
+    }
+
+    constraint IDRange oftype RangeConstraint {
+        lowerBound: 0;
+        lowerBoundInclusive: false;
+    }
+
+    valuetype MonthType oftype integer {
+        constraints: [
+            MonthRange,
+        ];
+    }
+
+    constraint MonthRange oftype RangeConstraint {
+        lowerBound: 1;
+        upperBound: 12;
+    }
+
+    valuetype GermanBoolean oftype text {
+        constraints: [
+            GermanBooleanValues,
+        ];
+    }
+
+    constraint GermanBooleanValues on text:
+        value in [
+            "Ja", "Nein"
+        ];
 
 }
