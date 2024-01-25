@@ -7,3 +7,4 @@ exercises/requirements.txt
 project/urls.txt
 __pycache__
 .vscode
+.venv-ex
